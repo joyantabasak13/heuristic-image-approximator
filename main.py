@@ -1,15 +1,16 @@
 import numpy as np
 import cv2
 from random import seed
+from random import uniform
 from random import randint
 from scipy.stats import truncnorm
 from datetime import datetime
 #seed(1)
 
 ###### CONSTANTS ###############
-TRIANGLE_COUNT  = 60
-POPULATION_SIZE = 5
-INTRA_GEN_POP   = 25
+TRIANGLE_COUNT  = 100
+POPULATION_SIZE = 1
+INTRA_GEN_POP   = 5
 
 ##### Functions ################
 
@@ -18,10 +19,19 @@ def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
         (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
 def generateRandomTriangle(triangle):
-    for x in range(3):
-        pt = [randint(0, 511), randint(0,511)]
+    area = 511*511
+    for x in range(2):
+        pt = [uniform(0, 511), uniform(0,511)]
         triangle.append(pt)
-    color = [randint(0,255), randint(0,255), randint(0,255)]
+    while(area>13056):      #5% of total area
+        pt = [uniform(0, 511), uniform(0,511)]
+        area = int(0.5*(triangle[0][0]*(triangle[1][1] - pt[1])
+                        + triangle[1][0]*(pt[1] - triangle[0][1]) + pt[0]*(triangle[0][1] - triangle[1][1])))
+        area = abs(area)
+        print(area)
+    #Area =.5*[x1(y2 - y3) + x2(y3 - y1) + x3(y1 - y2)]
+    triangle.append(pt)
+    color = randint(0,255)
     triangle.append(color)
     return triangle
 
@@ -36,10 +46,10 @@ def generateRandomTriangles(NumOfTri):
 
 def trianglesToImg(triangles):
     # Create a black image
-    img = np.zeros((512, 512, 3), np.uint8)
+    img = np.zeros((512, 512), np.uint8)
     for i in range(len(triangles)):
         triangle = triangles[i]
-        t_points = np.array([triangle[0], triangle[1], triangle[2]])
+        t_points = np.array([triangle[0], triangle[1], triangle[2]], dtype= np.int32)
         img = cv2.fillConvexPoly(img, t_points, triangle[3])
         #print("Colour for ",i," is ",triangle[3])
         #print("Shape for ", i, " is ", t_points)
@@ -52,14 +62,17 @@ def colorDiff(colorX,colorY):
 
 def evaluateTriangle(triangle, ref_Image):
     # Create a black image
-    temp_img = np.zeros((512, 512, 3), np.uint8)
-    t_points = np.array([triangle[0], triangle[1], triangle[2]])
+    temp_img = np.zeros((512, 512), np.uint8)
+    t_points = np.array([triangle[0], triangle[1], triangle[2]], dtype='int32')
+    #print(type(triangle[3]))
+    #print(type(int(triangle[3])))
+    #print(triangle[3])
     temp_img = cv2.fillConvexPoly(temp_img, t_points, triangle[3])
-    combined = temp_img[:, :, 0]
+    combined = temp_img[:, :]
     rows, cols = np.where(combined > 0)
     fitness_val = 0
     for p in range(len(rows)):
-        fitness_val = fitness_val + colorDiff(ref_Image[rows[p],cols[p],:], triangle[3])
+        fitness_val = fitness_val + colorDiff(ref_Image[rows[p],cols[p]], triangle[3])
     #cv2.imshow(str(t_points[0,0]), temp_img)
     return fitness_val
 
@@ -67,22 +80,28 @@ def evaluateImage(test_Image, ref_Image):
     fitness_val = 0
     for r in range(512):
         for c in range(512):
-            fitness_val = fitness_val + colorDiff(test_Image[r,c,:], ref_Image[r,c,:])
+            fitness_val = fitness_val + colorDiff(test_Image[r,c], ref_Image[r,c])
     return fitness_val
 
 def tweakTriangle(triangle):
-    X = get_truncated_normal(mean=0, sd=.5, low=-1, upp=1)
+    X = get_truncated_normal(mean=0, sd=.5, low=-20, upp=20)
     change = []
-    for i in range(9):
+    for i in range(7):
         change.append(X.rvs())
     change = np.array(change)
     for i in range(3):
         for j in range(2):
-            triangle[i][j] = int (triangle[i][j] +
-                                  (triangle[i][j]*change[i*2+j] if change[i*2+j]<0 else (511- triangle[i][j])*change[i*2+j]))
-    for i in range(3):
-        triangle[3][i] = int (triangle[3][i] +
-                              (triangle[3][i]*change[5+i] if change[5+i]<0 else (255- triangle[3][i])*change[5+i]))
+            triangle[i][j] = int (triangle[i][j]+change[i*2+j])
+            if triangle[i][j]>511:
+                triangle[i][j] = 511
+            if triangle[i][j] <0:
+                triangle[i][j] = 0
+
+    triangle[3] = int (triangle[3] + change[6])
+    if triangle[3] < 0 :
+        triangle[3] = 0
+    if triangle[3] > 255:
+        triangle[3] = 255
     #print(change)
     return triangle
 
@@ -102,8 +121,9 @@ def tournamentSelectMutation(triangles, ref_Image):
 def generateOffspings(population, ref_Image):
     off_Pop = []
     for x in range(POPULATION_SIZE):
+        off_Pop.append(population[x]) #ADD Parent
         for y in range(int(INTRA_GEN_POP/POPULATION_SIZE)):
-            for z in range(int(TRIANGLE_COUNT/4)):
+            for z in range(int(TRIANGLE_COUNT/2)):
                 population[x] = tournamentSelectMutation(population[x], ref_Image)
             off_Pop.append(population[x])
     return off_Pop
@@ -127,9 +147,9 @@ def selectSuccessorPop(population, ref_Image):
 
 
 ##### Initialization ###########
-best_image = np.zeros((512,512,3), np.uint8)
-best_fitness = 512*512*256*3
-ref_Img = cv2.imread('ref.jpg',1)
+best_image = np.zeros((512,512), np.uint8)
+best_fitness = 512*512*256
+ref_Img = cv2.imread('ref.jpg', cv2.IMREAD_GRAYSCALE)
 file = open("Fitness.txt", "w")
 pop = []
 pop_images = []
@@ -138,6 +158,7 @@ generation = 0
 for x in range(POPULATION_SIZE):
     randTri = generateRandomTriangles(TRIANGLE_COUNT)
     pop.append(randTri)
+    print("Initial Image Created for Pop: ",x)
     #temp_image = trianglesToImg(randTri)
     #Pop_Images.append(temp_image)
 
