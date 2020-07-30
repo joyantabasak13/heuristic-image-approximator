@@ -3,7 +3,18 @@
   <component name="ChangeListManager">
     <list default="true" id="943c3897-48b2-46e0-8ac8-4d53397268c4" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fitness.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Fitness.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gen_Best_1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gen_Best_2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gen_Best_3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gen_Best_4.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gen_Best_5.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gen_Best_6.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gen_Best_7.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gen_Best_8.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gen_Best_9.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ref.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/ref.jpg" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -17,8 +28,8 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2588">
-              <caret line="11" column="19" lean-forward="true" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
+            <state relative-caret-position="187">
+              <caret line="11" column="19" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -41,6 +52,7 @@
       <find>trianglesToImg</find>
       <find>print</find>
       <find>INTRA_GEN_POP</find>
+      <find>5</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -53,9 +65,9 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
-    <option name="x" value="520" />
-    <option name="y" value="95" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="739" />
+    <option name="y" value="9" />
     <option name="width" value="711" />
     <option name="height" value="688" />
   </component>
@@ -139,7 +151,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12664714" />
@@ -147,7 +159,7 @@
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32913387" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32913387" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -197,8 +209,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2588">
-          <caret line="11" column="19" lean-forward="true" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
+        <state relative-caret-position="187">
+          <caret line="11" column="19" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

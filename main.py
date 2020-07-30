@@ -8,7 +8,7 @@ from datetime import datetime
 #seed(1)
 
 ###### CONSTANTS ###############
-TRIANGLE_COUNT  = 100
+TRIANGLE_COUNT  = 50
 POPULATION_SIZE = 1
 INTRA_GEN_POP   = 5
 
@@ -19,12 +19,12 @@ def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
         (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
 def generateRandomTriangle(triangle):
-    area = 511*511
+    area = 399*399
     for x in range(2):
-        pt = [uniform(0, 511), uniform(0,511)]
+        pt = [uniform(0, 399), uniform(0,399)]
         triangle.append(pt)
-    while(area>13056):      #5% of total area
-        pt = [uniform(0, 511), uniform(0,511)]
+    while(area>8000):      #5% of total area
+        pt = [uniform(0, 399), uniform(0,399)]
         area = int(0.5*(triangle[0][0]*(triangle[1][1] - pt[1])
                         + triangle[1][0]*(pt[1] - triangle[0][1]) + pt[0]*(triangle[0][1] - triangle[1][1])))
         area = abs(area)
@@ -46,7 +46,7 @@ def generateRandomTriangles(NumOfTri):
 
 def trianglesToImg(triangles):
     # Create a black image
-    img = np.zeros((512, 512), np.uint8)
+    img = np.zeros((400, 400), np.uint8)
     for i in range(len(triangles)):
         triangle = triangles[i]
         t_points = np.array([triangle[0], triangle[1], triangle[2]], dtype= np.int32)
@@ -62,7 +62,7 @@ def colorDiff(colorX,colorY):
 
 def evaluateTriangle(triangle, ref_Image):
     # Create a black image
-    temp_img = np.zeros((512, 512), np.uint8)
+    temp_img = np.zeros((400, 400), np.uint8)
     t_points = np.array([triangle[0], triangle[1], triangle[2]], dtype='int32')
     #print(type(triangle[3]))
     #print(type(int(triangle[3])))
@@ -78,13 +78,13 @@ def evaluateTriangle(triangle, ref_Image):
 
 def evaluateImage(test_Image, ref_Image):
     fitness_val = 0
-    for r in range(512):
-        for c in range(512):
+    for r in range(400):
+        for c in range(400):
             fitness_val = fitness_val + colorDiff(test_Image[r,c], ref_Image[r,c])
     return fitness_val
 
 def tweakTriangle(triangle):
-    X = get_truncated_normal(mean=0, sd=.5, low=-20, upp=20)
+    X = get_truncated_normal(mean=0, sd=5, low=-20, upp=20)
     change = []
     for i in range(7):
         change.append(X.rvs())
@@ -92,8 +92,8 @@ def tweakTriangle(triangle):
     for i in range(3):
         for j in range(2):
             triangle[i][j] = int (triangle[i][j]+change[i*2+j])
-            if triangle[i][j]>511:
-                triangle[i][j] = 511
+            if triangle[i][j]>399:
+                triangle[i][j] = 399
             if triangle[i][j] <0:
                 triangle[i][j] = 0
 
@@ -147,8 +147,8 @@ def selectSuccessorPop(population, ref_Image):
 
 
 ##### Initialization ###########
-best_image = np.zeros((512,512), np.uint8)
-best_fitness = 512*512*256
+best_image = np.zeros((400,400), np.uint8)
+best_fitness = 400*400*256
 ref_Img = cv2.imread('ref.jpg', cv2.IMREAD_GRAYSCALE)
 file = open("Fitness.txt", "w")
 pop = []
@@ -180,6 +180,7 @@ while(1):
         print(text)
         best_fitness = gen_best_fitness
         best_image = gen_best_image
+
 
 file.close()
 #text = "Init_Image_No " + str(x)
