@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="943c3897-48b2-46e0-8ac8-4d53397268c4" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Fitness.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ref.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/ref.jpg" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,8 +17,8 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="277">
-              <caret line="183" column="27" selection-end-line="193" />
+            <state relative-caret-position="252">
+              <caret line="52" column="26" lean-forward="true" selection-end-line="201" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -40,11 +39,13 @@
     <findStrings>
       <find>imshow</find>
       <find>trianglesToImg</find>
-      <find>print</find>
       <find>INTRA_GEN_POP</find>
       <find>5</find>
       <find>np.asarray</find>
       <find>fillConvexPoly</find>
+      <find>400</find>
+      <find>399</find>
+      <find>print</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -151,7 +152,7 @@
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32913387" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32913387" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -237,8 +238,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="277">
-          <caret line="183" column="27" selection-end-line="193" />
+        <state relative-caret-position="252">
+          <caret line="52" column="26" lean-forward="true" selection-end-line="201" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

@@ -5,27 +5,28 @@ from random import uniform
 from random import randint
 from scipy.stats import truncnorm
 from datetime import datetime
+import copy
 #seed(1)
 
 ###### CONSTANTS ###############
-POLYGON_COUNT  = 50
+POLYGON_COUNT  = 100
 POPULATION_SIZE = 1
-INTRA_GEN_POP   = 5
+INTRA_GEN_POP   = 10
 POLYGON_ANGLES  = 10
 
 ##### Functions ################
 
-def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
+def get_truncated_normal(mean, sd, low, upp):
     return truncnorm(
         (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
 def generateRandomPolygon(polygon):
-    area = 399*399
+    area = 511*511
     angles = randint(3, POLYGON_ANGLES+1)
-    while(area>8000):
+    while(area>2000):
         polygon = []
         for x in range(angles):
-            pt = [int(uniform(0, 399)), int(uniform(0,399))]
+            pt = [int(uniform(0, 511)), int(uniform(0,511))]
             polygon.append(pt)
         n = len(polygon)
         for i in range(n):
@@ -50,7 +51,7 @@ def generateRandomPolygons(NumOfPolygon):
 
 def polygonsToImg(polygons):
     # Create a black image
-    img = np.zeros((400, 400), np.uint8)
+    img = np.zeros((512, 512), np.uint8)
     for i in range(len(polygons)):
         polygon = polygons[i]
         t_points = []
@@ -71,7 +72,7 @@ def evaluateImage(test_Image, ref_Image):
 
 def tweakPolygon(polygon, percentOfAngles):
     angleFraction = int (100/percentOfAngles)
-    X = get_truncated_normal(mean=0, sd=5, low=-20, upp=20)
+    X = get_truncated_normal(mean=0, sd=5, low=-10, upp=10)
     change = []
     pts = []
     pointsToBeMutated = int ((len(polygon)-1)/angleFraction)
@@ -82,8 +83,8 @@ def tweakPolygon(polygon, percentOfAngles):
         x = int(uniform(0,len(polygon)-1))
         for j in range(2):
             polygon[x][j] = int (polygon[x][j]+change[i*2+j])
-            if polygon[x][j]>399:
-                polygon[x][j] = 399
+            if polygon[x][j]>511:
+                polygon[x][j] = 511
             if polygon[x][j] <0:
                 polygon[x][j] = 0
 
@@ -116,12 +117,14 @@ def tournamentSelectMutation(polygons, ref_Image):
 def generateOffspings(population, ref_Image):
     off_Pop = []
     percentOfAngles = 50
+    off_Pop = copy.deepcopy(population)  # ADD Parent
     for x in range(POPULATION_SIZE):
-        off_Pop.append(population[x]) #ADD Parent
         for y in range(int(INTRA_GEN_POP/POPULATION_SIZE)):
+            child = []
+            child = copy.deepcopy(population[x])
             for z in range(int(POLYGON_COUNT / 4)):
-                population[x] = randomPolygonMutation(population[x], percentOfAngles)
-            off_Pop.append(population[x])
+                child = randomPolygonMutation(child, percentOfAngles)
+            off_Pop.append(copy.deepcopy(child))
     return off_Pop
 
 def selectSuccessorPop(population, ref_Image):
@@ -134,7 +137,11 @@ def selectSuccessorPop(population, ref_Image):
     for x in range(len(offspring)):
         off_Image.append(polygonsToImg(offspring[x]))
         off_fitness.append(evaluateImage(off_Image[x],ref_Image))
-    ind = np.argpartition(np.asarray(off_fitness), POPULATION_SIZE)[:POPULATION_SIZE]
+    ind = np.argpartition(np.asarray(off_fitness), range(POPULATION_SIZE))[:POPULATION_SIZE]
+    #print("Successor Fitness is \n")
+    #print(off_fitness)
+    #print("Successor is -->",str(off_fitness[ind[0]]))
+    #print(ind)
     for x in range(len(ind)):
         successor_Pop.append(offspring[ind[x]])
         successor_fitness.append(off_fitness[ind[x]])
@@ -143,7 +150,7 @@ def selectSuccessorPop(population, ref_Image):
 
 
 ##### Initialization ###########
-best_fitness = 400*400*256
+best_fitness = 512*512*256
 ref_Img = cv2.imread('ref.jpg', cv2.IMREAD_GRAYSCALE)
 pop = []
 pop_images = []
@@ -172,13 +179,14 @@ while(1):
     if best_fitness > gen_best_fitness:
         text = "New Best at gen " + str(generation) + " with Fitness " + str(gen_best_fitness)
         print(text)
-        text = str(generation)+".jpg"
-        cv2.imwrite(text, gen_best_image)
         best_fitness = gen_best_fitness
         with open('bestPolygons.txt', 'w') as f:
             for item in gen_best:
                 f.write("%s\n" % item)
             f.close()
+    if (generation%100 == 0):
+        text = str(generation) + ".jpg"
+        cv2.imwrite(text, gen_best_image)
 
 #text = "Init_Image_No " + str(x)
 #cv2.imshow(text,temp_image)
