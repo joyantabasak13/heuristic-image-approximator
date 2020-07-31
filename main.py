@@ -8,9 +8,10 @@ from datetime import datetime
 #seed(1)
 
 ###### CONSTANTS ###############
-TRIANGLE_COUNT  = 50
+POLYGON_COUNT  = 50
 POPULATION_SIZE = 1
 INTRA_GEN_POP   = 5
+POLYGON_ANGLES  = 10
 
 ##### Functions ################
 
@@ -18,113 +19,108 @@ def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
     return truncnorm(
         (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
-def generateRandomTriangle(triangle):
+def generateRandomPolygon(polygon):
     area = 399*399
-    for x in range(2):
-        pt = [uniform(0, 399), uniform(0,399)]
-        triangle.append(pt)
-    while(area>8000):      #5% of total area
-        pt = [uniform(0, 399), uniform(0,399)]
-        area = int(0.5*(triangle[0][0]*(triangle[1][1] - pt[1])
-                        + triangle[1][0]*(pt[1] - triangle[0][1]) + pt[0]*(triangle[0][1] - triangle[1][1])))
+    angles = randint(3, POLYGON_ANGLES+1)
+    while(area>8000):
+        polygon = []
+        for x in range(angles):
+            pt = [int(uniform(0, 399)), int(uniform(0,399))]
+            polygon.append(pt)
+        n = len(polygon)
+        for i in range(n):
+            i1 = (i + 1) % n
+            area += polygon[i][0] * polygon[i1][1] - polygon[i1][0] * polygon[i][1]
+        area *= 0.5
         area = abs(area)
-        print(area)
-    #Area =.5*[x1(y2 - y3) + x2(y3 - y1) + x3(y1 - y2)]
-    triangle.append(pt)
+    #Area =.5*[(x0y1 - x1y0) + ...+ (x(n-1)y0 - x0y(n-1))]
+    polygon.append(pt)
     color = randint(0,255)
-    triangle.append(color)
-    return triangle
+    polygon.append(color)
+    return polygon
 
-def generateRandomTriangles(NumOfTri):
-    randomTriangles = []
-    for n in range(NumOfTri):
-        triangle = []
-        triangle = generateRandomTriangle(triangle)
-        randomTriangles.append(triangle)
+def generateRandomPolygons(NumOfPolygon):
+    randomPolygons = []
+    for n in range(NumOfPolygon):
+        polygon = []
+        polygon = generateRandomPolygon(polygon)
+        randomPolygons.append(polygon)
         #print(triangle)
-    return randomTriangles
+    return randomPolygons
 
-def trianglesToImg(triangles):
+def polygonsToImg(polygons):
     # Create a black image
     img = np.zeros((400, 400), np.uint8)
-    for i in range(len(triangles)):
-        triangle = triangles[i]
-        t_points = np.array([triangle[0], triangle[1], triangle[2]], dtype= np.int32)
-        img = cv2.fillConvexPoly(img, t_points, triangle[3])
+    for i in range(len(polygons)):
+        polygon = polygons[i]
+        t_points = []
+        t_points = polygon[:-1]
+        t_points = np.asarray(t_points)
+        np.reshape(t_points,(len(polygon)-1,2))
+        t_points = np.int32(t_points)
+        img = cv2.fillConvexPoly(img, cv2.convexHull(t_points), polygon[-1])
         #print("Colour for ",i," is ",triangle[3])
         #print("Shape for ", i, " is ", t_points)
     return img
 
-def colorDiff(colorX,colorY):
-    colorX_val = np.sum((np.array(colorX)).astype(int))
-    colorY_val = np.sum((np.array(colorY)).astype(int))
-    return abs(colorX_val - colorY_val)
-
-def evaluateTriangle(triangle, ref_Image):
-    # Create a black image
-    temp_img = np.zeros((400, 400), np.uint8)
-    t_points = np.array([triangle[0], triangle[1], triangle[2]], dtype='int32')
-    #print(type(triangle[3]))
-    #print(type(int(triangle[3])))
-    #print(triangle[3])
-    temp_img = cv2.fillConvexPoly(temp_img, t_points, triangle[3])
-    combined = temp_img[:, :]
-    rows, cols = np.where(combined > 0)
-    fitness_val = 0
-    for p in range(len(rows)):
-        fitness_val = fitness_val + colorDiff(ref_Image[rows[p],cols[p]], triangle[3])
-    #cv2.imshow(str(t_points[0,0]), temp_img)
-    return fitness_val
-
 def evaluateImage(test_Image, ref_Image):
     fitness_val = 0
-    for r in range(400):
-        for c in range(400):
-            fitness_val = fitness_val + colorDiff(test_Image[r,c], ref_Image[r,c])
+    fitness_mat = np.absolute(test_Image - ref_Img)
+    fitness_val = np.sum(fitness_mat)
     return fitness_val
 
-def tweakTriangle(triangle):
+def tweakPolygon(polygon, percentOfAngles):
+    angleFraction = int (100/percentOfAngles)
     X = get_truncated_normal(mean=0, sd=5, low=-20, upp=20)
     change = []
-    for i in range(7):
+    pts = []
+    pointsToBeMutated = int ((len(polygon)-1)/angleFraction)
+    for i in range((pointsToBeMutated*2)+1):
         change.append(X.rvs())
     change = np.array(change)
-    for i in range(3):
+    for i in range(pointsToBeMutated):
+        x = int(uniform(0,len(polygon)-1))
         for j in range(2):
-            triangle[i][j] = int (triangle[i][j]+change[i*2+j])
-            if triangle[i][j]>399:
-                triangle[i][j] = 399
-            if triangle[i][j] <0:
-                triangle[i][j] = 0
+            polygon[x][j] = int (polygon[x][j]+change[i*2+j])
+            if polygon[x][j]>399:
+                polygon[x][j] = 399
+            if polygon[x][j] <0:
+                polygon[x][j] = 0
 
-    triangle[3] = int (triangle[3] + change[6])
-    if triangle[3] < 0 :
-        triangle[3] = 0
-    if triangle[3] > 255:
-        triangle[3] = 255
+    polygon[-1] = int (polygon[-1] + change[-1])
+    if polygon[-1] < 0 :
+        polygon[-1] = 0
+    if polygon[-1] > 255:
+        polygon[-1] = 255
     #print(change)
-    return triangle
+    return polygon
 
-def tournamentSelectMutation(triangles, ref_Image):
-    a = randint(0,TRIANGLE_COUNT-1)
-    b = randint(0,TRIANGLE_COUNT-1)
+def randomPolygonMutation(polygons, percentOfAngles):
+    a= randint(0, POLYGON_COUNT - 1)
+    tweakPolygon(polygons[a], percentOfAngles)
+    return polygons
+
+def tournamentSelectMutation(polygons, ref_Image):
+    a = randint(0, POLYGON_COUNT - 1)
+    b = randint(0, POLYGON_COUNT - 1)
     while (a == b):
-        b = randint(0, TRIANGLE_COUNT - 1)
-    a_val = evaluateTriangle(triangles[a], ref_Image)
-    b_val = evaluateTriangle(triangles[b], ref_Image)
+        b = randint(0, POLYGON_COUNT - 1)
+    a_val = 0 #evaluateTriangle(polygons[a], ref_Image)
+    b_val = 0 #evaluateTriangle(polygons[b], ref_Image)
     if a_val > b_val :
-        triangles[b] = tweakTriangle(triangles[b])
+        polygons[b] = tweakPolygon(polygons[b])
     else:
-        triangles[a] = tweakTriangle(triangles[a])
-    return triangles
+        polygons[a] = tweakPolygon(polygons[a])
+    return polygons
 
 def generateOffspings(population, ref_Image):
     off_Pop = []
+    percentOfAngles = 50
     for x in range(POPULATION_SIZE):
         off_Pop.append(population[x]) #ADD Parent
         for y in range(int(INTRA_GEN_POP/POPULATION_SIZE)):
-            for z in range(int(TRIANGLE_COUNT/2)):
-                population[x] = tournamentSelectMutation(population[x], ref_Image)
+            for z in range(int(POLYGON_COUNT / 4)):
+                population[x] = randomPolygonMutation(population[x], percentOfAngles)
             off_Pop.append(population[x])
     return off_Pop
 
@@ -136,7 +132,7 @@ def selectSuccessorPop(population, ref_Image):
     successor_fitness = []
     successor_Image = []
     for x in range(len(offspring)):
-        off_Image.append(trianglesToImg(offspring[x]))
+        off_Image.append(polygonsToImg(offspring[x]))
         off_fitness.append(evaluateImage(off_Image[x],ref_Image))
     ind = np.argpartition(np.asarray(off_fitness), POPULATION_SIZE)[:POPULATION_SIZE]
     for x in range(len(ind)):
@@ -147,16 +143,14 @@ def selectSuccessorPop(population, ref_Image):
 
 
 ##### Initialization ###########
-best_image = np.zeros((400,400), np.uint8)
 best_fitness = 400*400*256
 ref_Img = cv2.imread('ref.jpg', cv2.IMREAD_GRAYSCALE)
-file = open("Fitness.txt", "w")
 pop = []
 pop_images = []
 pop_fitness = []
 generation = 0
 for x in range(POPULATION_SIZE):
-    randTri = generateRandomTriangles(TRIANGLE_COUNT)
+    randTri = generateRandomPolygons(POLYGON_COUNT)
     pop.append(randTri)
     print("Initial Image Created for Pop: ",x)
     #temp_image = trianglesToImg(randTri)
@@ -164,25 +158,28 @@ for x in range(POPULATION_SIZE):
 
 while(1):
     generation = generation + 1
-    print(datetime.now())
-    print(generation)
+    text_tag = str(datetime.now()) + " --> Gen: " + str(generation)
+    print(text_tag)
     pop, pop_fitness, pop_images = selectSuccessorPop(pop,ref_Img)
-    file.writelines("\n%d\n" %(generation))
-    file.writelines("%s " % item for item in pop_fitness)
     ind = np.argmin(np.asarray(pop_fitness))
     gen_best = pop[ind]
     gen_best_fitness = pop_fitness[ind]
     gen_best_image = pop_images[ind]
-    text = "Gen_Best_" + str(generation) +".jpg"
-    cv2.imwrite(text, gen_best_image)
+    f = open("fitness.txt", "a")
+    f.write(str(gen_best_fitness))
+    f.write("\n")
+    f.close()
     if best_fitness > gen_best_fitness:
         text = "New Best at gen " + str(generation) + " with Fitness " + str(gen_best_fitness)
         print(text)
+        text = str(generation)+".jpg"
+        cv2.imwrite(text, gen_best_image)
         best_fitness = gen_best_fitness
-        best_image = gen_best_image
+        with open('bestPolygons.txt', 'w') as f:
+            for item in gen_best:
+                f.write("%s\n" % item)
+            f.close()
 
-
-file.close()
 #text = "Init_Image_No " + str(x)
 #cv2.imshow(text,temp_image)
 
