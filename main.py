@@ -24,8 +24,8 @@ def generateRandomPolygon(polygon):
     area = 511*511
     angles = randint(3, POLYGON_ANGLES)
 
-    polygon = []
-    while(area<511*511/4):
+    while(area > (511*511/4)):
+        polygon = []
         for x in range(angles):
             pt = [int(uniform(0, 511)), int(uniform(0,511))]
             polygon.append(pt)
