@@ -23,25 +23,29 @@ def get_truncated_normal(mean, sd, low, upp):
 def generateRandomPolygon(polygon):
     area = 511*511
     angles = randint(3, POLYGON_ANGLES)
-
-    while(area > (511*511/4)):
-        polygon = []
-        for x in range(angles):
-            pt = [int(uniform(0, 511)), int(uniform(0,511))]
-            polygon.append(pt)
-        polygon = np.asarray(polygon)
-        np.reshape(polygon, (len(polygon), 2))
-        polygon = np.int32(polygon)
-        polygon = cv2.convexHull(polygon)
-        polygon = np.asarray(polygon)
-        polygon = polygon.flatten().reshape(-1,2)
-        n = len(polygon)
-        for i in range(n):
-            i1 = (i + 1) % n
-            area += polygon[i][0] * polygon[i1][1] - polygon[i1][0] * polygon[i][1]
-        area *= 0.5
-        area = abs(area)
+    originPt = [int(uniform(0, 511)), int(uniform(0,511))]
+    originPt[0] = originPt[0] if ((originPt[0]+50) < 511) else (511-50)
+    originPt[0] = originPt[0] if ((originPt[0]-50) > 0) else 50
+    originPt[1] = originPt[1] if ((originPt[1] + 50) < 511) else (511 - 50)
+    originPt[1] = originPt[1] if ((originPt[1] - 50) > 0) else 50
+    polygon = []
+    for x in range(angles):
+        pt = [int(uniform(originPt[0] - 50 , originPt[0] + 50)), int(uniform(originPt[1] - 50 , originPt[1] + 50))]
+        polygon.append(pt)
+    polygon = np.asarray(polygon)
+    np.reshape(polygon, (len(polygon), 2))
+    polygon = np.int32(polygon)
+    polygon = cv2.convexHull(polygon)
+    polygon = np.asarray(polygon)
+    polygon = polygon.flatten().reshape(-1,2)
+    n = len(polygon)
+    for i in range(n):
+        i1 = (i + 1) % n
+        area += polygon[i][0] * polygon[i1][1] - polygon[i1][0] * polygon[i][1]
+    area *= 0.5
+    area = abs(area)
     #Area =.5*[(x0y1 - x1y0) + ...+ (x(n-1)y0 - x0y(n-1))]
+    print(area)
     color = randint(0,255)
     polygon = np.array(polygon).tolist()
     polygon.append(color)
