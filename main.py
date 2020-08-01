@@ -23,14 +23,15 @@ def get_truncated_normal(mean, sd, low, upp):
 def generateRandomPolygon(polygon):
     area = 511*511
     angles = randint(3, POLYGON_ANGLES)
-    originPt = [int(uniform(0, 511)), int(uniform(0,511))]
-    originPt[0] = originPt[0] if ((originPt[0]+50) < 511) else (511-50)
-    originPt[0] = originPt[0] if ((originPt[0]-50) > 0) else 50
-    originPt[1] = originPt[1] if ((originPt[1] + 50) < 511) else (511 - 50)
-    originPt[1] = originPt[1] if ((originPt[1] - 50) > 0) else 50
     polygon = []
+    originPt = []
+    originPt = [int(uniform(0, 511)), int(uniform(0,511))]
+    originPt[0] = originPt[0] if ((originPt[0]+100) < 511) else (511-100)
+    originPt[0] = originPt[0] if ((originPt[0]-100) > 0) else 50
+    originPt[1] = originPt[1] if ((originPt[1] + 100) < 511) else (511 - 100)
+    originPt[1] = originPt[1] if ((originPt[1] - 100) > 0) else 100
     for x in range(angles):
-        pt = [int(uniform(originPt[0] - 50 , originPt[0] + 50)), int(uniform(originPt[1] - 50 , originPt[1] + 50))]
+        pt = [int(uniform(originPt[0] - 100 , originPt[0] + 100)), int(uniform(originPt[1] - 100 , originPt[1] + 100))]
         polygon.append(pt)
     polygon = np.asarray(polygon)
     np.reshape(polygon, (len(polygon), 2))
@@ -39,14 +40,17 @@ def generateRandomPolygon(polygon):
     polygon = np.asarray(polygon)
     polygon = polygon.flatten().reshape(-1,2)
     n = len(polygon)
+    if n < 3:
+        print(polygon)
+        return generateRandomPolygon(polygon)
     for i in range(n):
         i1 = (i + 1) % n
         area += polygon[i][0] * polygon[i1][1] - polygon[i1][0] * polygon[i][1]
     area *= 0.5
     area = abs(area)
     #Area =.5*[(x0y1 - x1y0) + ...+ (x(n-1)y0 - x0y(n-1))]
-    print(area)
-    color = randint(0,255)
+    #print(area)
+    color = randint(1,255)
     polygon = np.array(polygon).tolist()
     polygon.append(color)
     return polygon
@@ -100,8 +104,8 @@ def tweakPolygon(polygon, percentOfAngles):
                 polygon[x][j] = 0
 
     polygon[-1] = int (polygon[-1] + change[-1])
-    if polygon[-1] < 0 :
-        polygon[-1] = 0
+    if polygon[-1] < 1 :
+        polygon[-1] = 1
     if polygon[-1] > 255:
         polygon[-1] = 255
     #print(change)
@@ -115,12 +119,18 @@ def evaluatePolygon(polygon, ref_Image):
     t_points = np.asarray(t_points)
     np.reshape(t_points, (len(polygon) - 1, 2))
     t_points = np.int32(t_points)
-    img = cv2.fillConvexPoly(temp_img, cv2.convexHull(t_points), polygon[-1])
+    temp_img = cv2.fillConvexPoly(temp_img, cv2.convexHull(t_points), polygon[-1])
     combined = temp_img[:, :]
     rows, cols = np.where(combined > 0)
     indices = list([rows,cols])
     fitness_val = 0
-    fitness_val = int(abs(np.sum(ref_Image[tuple(indices)])- (polygon[-1]*len(rows)))/len(rows))
+    if (len(rows)) > 0 :
+        fitness_val = int(abs(np.sum(ref_Image[tuple(indices)])- int(polygon[-1]*len(rows)))/len(rows))
+    else :
+        print("Convex hull Vanished or Color vanished")
+        print(polygon)
+        polygon = generateRandomPolygon(polygon)
+        fitness_val = evaluatePolygon(polygon, ref_Img)
     #print("Polygon Fitness Val -->",fitness_val)
     #cv2.imshow(str(t_points[0,0]), temp_img)
     return fitness_val

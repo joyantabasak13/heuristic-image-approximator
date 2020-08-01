@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="943c3897-48b2-46e0-8ac8-4d53397268c4" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/0.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bestPolygons.txt" beforeDir="false" afterPath="$PROJECT_DIR$/bestPolygons.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fitness.txt" beforeDir="false" afterPath="$PROJECT_DIR$/fitness.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,8 +19,8 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="192">
-              <caret line="195" column="6" selection-end-line="231" />
+            <state relative-caret-position="-782">
+              <caret line="52" column="21" selection-end-line="241" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -151,7 +154,7 @@
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32913387" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32913387" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -407,8 +410,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="195" column="6" selection-end-line="231" />
+        <state relative-caret-position="-782">
+          <caret line="52" column="21" selection-end-line="241" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
