@@ -25,21 +25,22 @@ def generateRandomPolygon(polygon):
     angles = randint(3, POLYGON_ANGLES)
 
     polygon = []
-    for x in range(angles):
-        pt = [int(uniform(0, 511)), int(uniform(0,511))]
-        polygon.append(pt)
-    polygon = np.asarray(polygon)
-    np.reshape(polygon, (len(polygon), 2))
-    polygon = np.int32(polygon)
-    polygon = cv2.convexHull(polygon)
-    polygon = np.asarray(polygon)
-    polygon = polygon.flatten().reshape(-1,2)
-    n = len(polygon)
-    for i in range(n):
-        i1 = (i + 1) % n
-        area += polygon[i][0] * polygon[i1][1] - polygon[i1][0] * polygon[i][1]
-    area *= 0.5
-    area = abs(area)
+    while(area<511*511/4):
+        for x in range(angles):
+            pt = [int(uniform(0, 511)), int(uniform(0,511))]
+            polygon.append(pt)
+        polygon = np.asarray(polygon)
+        np.reshape(polygon, (len(polygon), 2))
+        polygon = np.int32(polygon)
+        polygon = cv2.convexHull(polygon)
+        polygon = np.asarray(polygon)
+        polygon = polygon.flatten().reshape(-1,2)
+        n = len(polygon)
+        for i in range(n):
+            i1 = (i + 1) % n
+            area += polygon[i][0] * polygon[i1][1] - polygon[i1][0] * polygon[i][1]
+        area *= 0.5
+        area = abs(area)
     #Area =.5*[(x0y1 - x1y0) + ...+ (x(n-1)y0 - x0y(n-1))]
     color = randint(0,255)
     polygon = np.array(polygon).tolist()
@@ -115,7 +116,7 @@ def evaluatePolygon(polygon, ref_Image):
     rows, cols = np.where(combined > 0)
     indices = list([rows,cols])
     fitness_val = 0
-    fitness_val = abs(np.sum(ref_Image[tuple(indices)])- (polygon[-1]*len(rows)))
+    fitness_val = int(abs(np.sum(ref_Image[tuple(indices)])- (polygon[-1]*len(rows)))/len(rows))
     #print("Polygon Fitness Val -->",fitness_val)
     #cv2.imshow(str(t_points[0,0]), temp_img)
     return fitness_val
@@ -132,7 +133,7 @@ def tournamentSelectMutation(polygons, ref_Image, percentOfAngles):
         b = randint(0, POLYGON_COUNT - 1)
     a_val = evaluatePolygon(polygons[a], ref_Image) #evaluateTriangle(polygons[a], ref_Image)
     b_val = evaluatePolygon(polygons[b], ref_Image) #evaluateTriangle(polygons[b], ref_Image)
-    if a_val > b_val :
+    if a_val < b_val :
         polygons[b] = tweakPolygon(polygons[b], percentOfAngles)
     else:
         polygons[a] = tweakPolygon(polygons[a], percentOfAngles)

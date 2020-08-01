@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="943c3897-48b2-46e0-8ac8-4d53397268c4" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/100.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/100.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bestPolygons.txt" beforeDir="false" afterPath="$PROJECT_DIR$/bestPolygons.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fitness.txt" beforeDir="false" afterPath="$PROJECT_DIR$/fitness.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/0.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/100.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/200.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/300.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bestPolygons.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fitness.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -19,8 +22,8 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="13" column="20" selection-end-line="226" />
+            <state relative-caret-position="374">
+              <caret line="133" column="73" selection-end-line="227" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -240,8 +243,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="20" selection-end-line="226" />
+        <state relative-caret-position="374">
+          <caret line="133" column="73" selection-end-line="227" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
