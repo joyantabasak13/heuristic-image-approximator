@@ -1,2 +1,2 @@
-# Heuristic_Image_Approximator
-Explore different Meta-heuristic algorithms to generate an artificial image approximate to an given photo.
+# Heuristic Image Approximator
+GA to generate an polygonal approximatation to any given photo.
